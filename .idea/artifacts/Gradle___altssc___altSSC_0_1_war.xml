@@ -155,6 +155,7 @@
           <element id="library" level="project" name="Gradle: com.goldmansachs:gs-collections-api:5.1.0" />
           <element id="library" level="project" name="Gradle: net.minidev:asm:1.0.2" />
           <element id="library" level="project" name="Gradle: asm:asm:3.3.1" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/postgresql/postgresql/9.4.1208-atlassian-hosted/2e9f827db68777864b0c6b1df34383d813a9c80a/postgresql-9.4.1208-atlassian-hosted.jar" />
         </element>
       </element>
       <element id="directory" name="META-INF">

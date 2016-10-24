@@ -14,10 +14,15 @@ dataSource:
     password:
 
 environments:
-    development:
+    development:      #conexion para usar PostGreSQL en develop
         dataSource:
-            dbCreate: create-drop
-            url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+            pooled: true
+            jmxExport: true
+            driverClassName: org.postgresql.Driver
+            username: postgres
+            password: marcos321
+            url: jdbc:postgresql://localhost:5432/altssc_dev
+            dbCreate: update
     test:
         dataSource:
             dbCreate: update
