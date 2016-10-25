@@ -1,6 +1,10 @@
 package altssc
 
 import grails.transaction.Transactional
+import java.security.*                      //para hashear con salt
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
 
 @Transactional
 class InitService {
@@ -56,6 +60,37 @@ class InitService {
 //----------------------------------------------------------------------------------------------------------------------
 
         log.println("Usuarios y roles creados")
+
+//----------------------------------------------------------------------------------------------------------------------
+
+        def source = "Hello. This is my secret message. That should be hashed."
+        def secret = "super-secret-string"
+
+        String.metaClass.toSHA1 = { salt = "" ->
+            def messageDigest = MessageDigest.getInstance("SHA1")
+
+            messageDigest.update(salt.getBytes())
+            messageDigest.update(delegate.getBytes())
+
+        /*
+         * Why pad up to 40 characters? Because SHA-1 has an output
+         * size of 160 bits. Each hexadecimal character is 4-bits.
+         * 160 / 4 = 40
+         */
+            new BigInteger(1, messageDigest.digest()).toString(16).padLeft(40, '0')
+        }
+
+        Mac mac = Mac.getInstance("HmacSHA256")
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256")
+        mac.init(secretKeySpec)
+        byte[] digest = mac.doFinal(source.getBytes())
+        def encodedData = digest.encodeBase64().toString()
+
+        println "Source =       ${source}"
+        println "SHA1 =         ${source.encodeAsSHA1()}"
+        println "SHA256 =       ${source.encodeAsSHA256()}"
+        println "SHA1-salt =    ${source.toSHA1(secret)}"
+        println "HmacSHA256 =   ${encodedData}"
 
     }
 }
