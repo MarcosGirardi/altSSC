@@ -15,6 +15,11 @@
         </div>
         <div id="list-usuario" class="content scaffold-list" role="main">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
+            <h1><g:message code="${session.usuario.nombre}" /></h1>
+            <h1>
+                <g:if test="${session.roles.contains('ROLE_USER')}">USUARIO</g:if><br>
+                <g:if test="${session.roles.contains('ROLE_ADMIN')}">ADMINISTRADOR</g:if>
+            </h1>
             <g:if test="${flash.message}">
                 <div class="message" role="status">${flash.message}</div>
             </g:if>
