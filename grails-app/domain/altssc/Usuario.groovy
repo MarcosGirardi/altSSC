@@ -3,17 +3,17 @@ package altssc
 class Usuario {
 
     String  nombre
-    String  apellido
+    String  password
     String  mail
 
     static hasMany = [roles:UsuarioRol]
 
     static constraints = {
         nombre  (nullable:false)
-        apellido(nullable:false)
+        password(nullable:false)
         mail    (nullable:false)
     }
 
-    String toString(){"${this.apellido}, ${this.nombre}"}
+    String toString(){"${this.nombre}"}
 
 }

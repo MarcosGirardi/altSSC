@@ -10,36 +10,37 @@ import java.security.InvalidKeyException;
 class InitService {
 
     def init() {
+        println("----------------------------------------------")
 
-        log.println("creando roles")
+        println("creando roles")
         def userRole = Rol.findByAutoridad("ROLE_USER") ?: new Rol(autoridad: "ROLE_USER").save(failOnError: true, flush:true)
         def adminRole = Rol.findByAutoridad("ROLE_ADMIN") ?: new Rol(autoridad: "ROLE_ADMIN").save(failOnError: true, flush:true)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-        log.println("creando Admin")
+        println("creando Admin")
         def adminUser = Usuario.findByNombre('admin') ?: new Usuario(
                 nombre: 'admin',
-                apellido: 'admin',
+                password: 'admin',
                 mail: 'admin@admin').save(failOnError: true, flush:true)
 
         if (!UsuarioRol.findAllByUsuarioAndRol(adminUser, adminRole)){
             adminUser.addToRoles(rol: adminRole)
         }
 
-        log.println("creando User")
+        println("creando User")
         def userUser = Usuario.findByNombre('user') ?: new Usuario(
                 nombre: 'user',
-                apellido: 'user',
+                password: 'user',
                 mail: 'user@user').save(failOnError: true)
         if (!UsuarioRol.findAllByUsuarioAndRol(userUser, userRole)){
             userUser.addToRoles(rol: userRole)
         }
 
-        log.println("creando Sudo")
+        println("creando Sudo")
         def sudoUser = Usuario.findByNombre('sudo') ?: new Usuario(
                 nombre: 'sudo',
-                apellido: 'sudo',
+                password: 'sudo',
                 mail: 'sudo@sudo').save(failOnError: true)
         if (!UsuarioRol.findAllByUsuarioAndRol(sudoUser, adminRole)){
             sudoUser.addToRoles(rol: adminRole)
@@ -48,10 +49,10 @@ class InitService {
             sudoUser.addToRoles(rol: userRole)
         }
 
-        log.println("creando Marcos")
+        println("creando Marcos")
         def marcos = Usuario.findByNombre('marcos') ?: new Usuario(
                 nombre: 'marcos',
-                apellido: 'marcos',
+                password: 'marcos',
                 mail: 'marcos.girardi@uccuyosl.edu.ar').save(failOnError: true)
         if (!UsuarioRol.findAllByUsuarioAndRol(marcos, userRole)){
             marcos.addToRoles(rol: userRole)
@@ -59,10 +60,11 @@ class InitService {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-        log.println("Usuarios y roles creados")
+        println("Usuarios y roles creados")
+        println("----------------------------------------------")
 
 //----------------------------------------------------------------------------------------------------------------------
-
+/*
         def source = "Hello. This is my secret message. That should be hashed."
         def secret = "super-secret-string"
 
@@ -72,11 +74,6 @@ class InitService {
             messageDigest.update(salt.getBytes())
             messageDigest.update(delegate.getBytes())
 
-        /*
-         * Why pad up to 40 characters? Because SHA-1 has an output
-         * size of 160 bits. Each hexadecimal character is 4-bits.
-         * 160 / 4 = 40
-         */
             new BigInteger(1, messageDigest.digest()).toString(16).padLeft(40, '0')
         }
 
@@ -91,6 +88,6 @@ class InitService {
         println "SHA256 =       ${source.encodeAsSHA256()}"
         println "SHA1-salt =    ${source.toSHA1(secret)}"
         println "HmacSHA256 =   ${encodedData}"
-
+*/
     }
 }

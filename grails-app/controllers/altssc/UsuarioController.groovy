@@ -10,31 +10,72 @@ class UsuarioController {
 
     def index(Integer max) {
 
-        session.usuario = Usuario.findByNombre('user')
-        session.roles = session.usuario.roles.rol.toString()
-        println (session.usuario.nombre)
-        println (session.roles)
-
-        if (session.roles.contains("ROLE_ADMIN")){println "admin"}
+        if (session.usuario){println (session.usuario.nombre)} else {println "sin sesion"}
 
         params.max = Math.min(max ?: 10, 100)
-        respond Usuario.list(params), model:[usuarioCount: Usuario.count()]
+        request.withFormat {
+            form multipartForm {
+                flash.message = message(code: "logeado con permisos: ${session.roles}")
+            }
+            '*'{ respond Usuario.list(params), model:[usuarioCount: Usuario.count()]}
+        }
+
     }
 
     def show(Usuario usuario) {
-        if (session.roles.contains("ROLE_USER")){
-            respond usuario
+
+        println session.roles
+        def autorizado
+        if (session.usuario){
+            if (session.roles.contains("ROLE_USER")){
+                autorizado = true
+            } else {
+                autorizado = false
+            }
         } else {
-            redirect (uri: "/")
+            autorizado = false
         }
+
+        if (!autorizado) {
+            def msg = "no posee los permisos para ver esto."
+            request.withFormat {
+                form multipartForm {
+                    flash.error = message(code: "${msg}")
+                    redirect (controller: "usuario", action: "index")
+                }
+            }
+        } else {
+            respond usuario
+        }
+
+
     }
 
     def create() {
-        if (session.roles.contains("ROLE_ADMIN")){
-            respond new Usuario(params)
+
+        def autorizado
+        if (session.usuario){
+            if (session.roles.contains("ROLE_ADMIN")){
+                autorizado = true
+            } else {
+                autorizado = false
+            }
         } else {
-            redirect (uri: "/")
+            autorizado = false
         }
+
+        if (!autorizado) {
+            def msg = "no posee los permisos para ver esto."
+            request.withFormat {
+                form multipartForm {
+                    flash.error = message(code: "${msg}")
+                    redirect (controller: "usuario", action: "index")
+                }
+            }
+        } else {
+            respond new Usuario(params)
+        }
+
     }
 
     @Transactional
